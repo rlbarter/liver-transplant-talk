@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Circles</title>
+        <script type="text/javascript" src="https://d3js.org/d3.v4.js"></script>
+        <script src="//d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+
+        var h = 800;
+        var w = 500;
+        var padding = 10;
+
+        var data;
+        var svg = d3.select("body")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+        // load in the coordinates data
+        d3.json("coordinate_data.json", function(error, data) {
+          // define some scales
+          xScale = d3.scaleLinear()
+                      .domain([0, d3.max(data, function(d) {
+                        return d.x;
+                      })])
+                      .range([padding, w - padding]);
+          yScale = d3.scaleLinear()
+                      .domain([0, d3.max(data, function(d) {
+                        return d.y;
+                      })])
+                      .range([padding, h - padding]);
+          var colorScale = d3.scaleOrdinal(d3.schemeDark2);
+
+          var circles = svg.selectAll("circle")
+              .data(data)
+              .enter()
+              .append("circle")
+              .attr("cx", function(d) { return xScale(d.x); })
+              .attr("cy", function(d) { return yScale(d.y); })
+              .attr("r", 10)
+              .attr("fill", "grey");
+
+          svg.on("click", function() {
+            circles.attr("fill", function(d) {
+              return colorScale(d.category)
+            })
+          })
+
+        });
+
+
+
+
+        </script>
+    </body>
+</html>
